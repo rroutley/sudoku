@@ -15,14 +15,15 @@ namespace Test
 
             string puzzle;
 
+            int number = 0;
             while (true)
             {
-                Console.WriteLine("Enter Grid number");
-                var input = Console.ReadLine();
-                int number;
-                if (!int.TryParse(input, out number)){
-                    continue;
-                }
+                //Console.WriteLine("Enter Grid number");
+                //var input = Console.ReadLine();
+                //if (!int.TryParse(input, out number)){
+                //    continue;
+                //}
+                number++;
                 if (number < 1 || number > 50)
                 {
                     break;
@@ -35,11 +36,14 @@ namespace Test
                 b.Print(Console.Out);
 
                 var solver = new Solver();
-                solver.TraceOutput  =Console.Out;
-                solver.Execute(b);
+                solver.TraceOutput = Console.Out;
+                var success = solver.Execute(b);
+                if (!success)
+                {
+                    Console.ReadLine();
+                }
 
 
-             
             }
         }
 

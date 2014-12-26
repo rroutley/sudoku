@@ -11,35 +11,50 @@ namespace Sudoku
     {
         IEnumerable<IStrategy> strategies;
         public TextWriter TraceOutput { get; set; }
+        Stack<Board> boardStack = new Stack<Board>();
 
         public Solver()
         {
-
-            
-            strategies = new List<IStrategy>{
+            strategies = new List<IStrategy> {
                 new SingleCandidateStrategy(),
                 new OnePossibleValueInSquareStrategy(),
                 new OnePossibleValueInColumnStrategy(),
                 new OnePossibleValueInRowStrategy(),
+                new BruteForceStrategy(this),
             };
         }
 
-        public void Execute(Board board)
+        public bool Execute(Board board)
         {
+
+            board.ResetAllCandidates();
 
             int updates;
             do
             {
-                board.ComputeAllCandiddates();
+                board.UpdateChangedCandidates();
 
                 updates = 0;
-                foreach (var strategy in strategies)
+                try
                 {
-                    updates = strategy.Iterate(board);
-                    if (updates > 0)
+                    foreach (var strategy in strategies)
                     {
-                        TraceOutput.WriteLine(strategy.GetType().Name);
-                        break;
+                        updates = strategy.Iterate(board);
+
+                        if (updates > 0)
+                        {
+                            TraceOutput.WriteLine(strategy.GetType().Name);
+                            break;
+                        }
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    if (boardStack.Count > 0)
+                    {
+                        TraceOutput.WriteLine("Backtrack");
+                        board = PopState();
+                        updates = 1;
                     }
                 }
 
@@ -53,6 +68,19 @@ namespace Sudoku
 
             } while (updates > 0);
 
+
+            return board.CellsUnfilled == 0;
+        }
+
+
+        public void PushState(Board board)
+        {
+            boardStack.Push(board.Clone());
+        }
+
+        public Board PopState()
+        {
+            return boardStack.Pop();
         }
 
     }

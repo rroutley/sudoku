@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Sudoku
 {
+    [Serializable]
     public class Board
     {
         public const int n = 3;
@@ -31,50 +33,36 @@ namespace Sudoku
             }
         }
 
-        public void ComputeCandidate(int x, int y)
+
+        private void UpdateCandidates(int x, int y)
         {
-            HashSet<int> candidates;
-            if (cell[x, y] != Empty)
+            var value = cell[x, y];
+            if (value == Empty)
             {
-                candidates = new HashSet<int>();
+                return;
             }
-            else
+
+            candidates[x, y].Clear();
+
+            for (int i = 0; i < N; i++)
             {
+                candidates[i, y].Remove(value);
+            }
 
-                candidates = new HashSet<int>(Enumerable.Range(1, 9));
+            for (int j = 0; j < N; j++)
+            {
+                candidates[x, j].Remove(value);
+            }
 
-                // Remove any numbers found in the row 
-                for (int i = 0; i < N; i++)
+            // Remove this value from candidates found in the square
+            for (int i = n * (x / n), k = 0; k < n; k++, i++)
+            {
+                for (int j = n * (y / n), l = 0; l < n; l++, j++)
                 {
-                    if (cell[i, y] != Empty)
-                    {
-                        candidates.Remove(cell[i, y]);
-                    }
-                }
-
-                // Remove any numbers found in the column
-                for (int j = 0; j < N; j++)
-                {
-                    if (cell[x, j] != Empty)
-                    {
-                        candidates.Remove(cell[x, j]);
-                    }
-                }
-
-                // Remove any numbers found in the square
-                for (int i = n * (x / n), k = 0; k < n; k++, i++)
-                {
-                    for (int j = n * (y / n), l = 0; l < n; l++, j++)
-                    {
-                        if (cell[i, j] != Empty)
-                        {
-                            candidates.Remove(cell[i, j]);
-                        }
-                    }
+                    candidates[i, j].Remove(value);
                 }
             }
 
-            this.candidates[x, y] = candidates;
         }
 
         public static Board Load(string text)
@@ -144,19 +132,39 @@ namespace Sudoku
 
         }
 
+        public void UpdateChangedCandidates()
+        {
+            this.ForEachCell((x, y) =>
+            {
+                // Update the candidates that will be affected by placing this new cell.
+                if (isNew[x, y])
+                {
+                    UpdateCandidates(x, y);
 
-        public void ComputeAllCandiddates()
+                    isNew[x, y] = false;
+                }
+
+            });
+        }
+
+       
+
+
+        public void ResetAllCandidates()
         {
             CellsUnfilled = N * N;
             this.ForEachCell((x, y) => {
 
+                candidates[x, y] = new HashSet<int>(Enumerable.Range(1, 9));
+
                 if (cell[x, y] != Empty)
                 {
                     CellsUnfilled--;
-                }
 
-                ComputeCandidate(x, y);
-                isNew[x, y] = false;
+                    // Mark as new so UpdateCandates will be execute for this cell.
+                    isNew[x, y] = true;
+                }
+                
             });
         }
 
@@ -165,14 +173,76 @@ namespace Sudoku
 
         internal void SetCell(int x, int y, int value)
         {
-            if (this.cell[x, y] != Empty && cell[x, y] != value)
+            if (this.cell[x, y] != Empty)
             {
                 throw new InvalidOperationException();
             }
 
+            ReplaceCell(x, y, value);
+        }
+
+        internal void ReplaceCell(int x, int y, int value)
+        {
+            if (!CanSetCell(x, y, value))
+            {
+                throw new InvalidOperationException();
+            }
+
+            if (cell[x, y] == Empty)
+            {
+                this.CellsUnfilled--;
+            }
+
+
             this.cell[x, y] = value;
             this.isNew[x, y] = true;
-            this.CellsUnfilled--;
+        }
+
+
+
+        private bool CanSetCell(int x, int y, int value)
+        {
+            for (int i = 0; i < N; i++)
+            {
+                if (i != x && cell[i, y] == value)
+                {
+                    return false;
+                }
+            }
+
+            for (int j = 0; j < N; j++)
+            {
+                if (j != y && cell[x, j] == value)
+                {
+                    return false;
+                }
+            }
+
+            // Remove this value from candidates found in the square
+            for (int i = n * (x / n), k = 0; k < n; k++, i++)
+            {
+                for (int j = n * (y / n), l = 0; l < n; l++, j++)
+                {
+                    if (i != x && j != y && cell[i, j] == value)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        internal Board Clone()
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, this);
+                ms.Position = 0;
+
+                return (Board)formatter.Deserialize(ms);
+            }
         }
     }
 }

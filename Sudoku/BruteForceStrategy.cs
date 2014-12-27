@@ -22,9 +22,9 @@ namespace Sudoku
             int minX = -1, minY = -1, minCount = 10;
             board.ForEachCell((x, y) =>
             {
-                if (board.cell[x, y] == Board.Empty)
+                if (board.Cells[x, y].Value == Board.Empty)
                 {
-                    var c = board.candidates[x, y].Count;
+                    var c = board.Cells[x, y].Candidates.Count;
                     if (c == 0)
                     {
                         throw new InvalidOperationException();
@@ -42,7 +42,7 @@ namespace Sudoku
 
 
             // Save the state of thew board foreach candidiate
-            foreach (var value in board.candidates[minX, minY])
+            foreach (var value in board.Cells[minX, minY].Candidates)
             {
                 board.ReplaceCell(minX, minY, value);
                 solver.PushState(board);

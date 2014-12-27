@@ -20,7 +20,7 @@ namespace Sudoku
                 Tuple<int, int>[] firstSeen = new Tuple<int, int>[Board.N + 1];
                 for (int j = 0; j < Board.N; j++)
                 {
-                    foreach (var candidate in board.candidates[i, j])
+                    foreach (var candidate in board.Cells[i, j].Candidates)
                     {
                         frequency[candidate]++;
                         if (frequency[candidate] == 1)

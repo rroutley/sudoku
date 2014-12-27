@@ -15,12 +15,21 @@ namespace Sudoku
         public const int N = n * n;
         public const int Empty = 0;
 
-        internal int[,] cell = new int[N, N];
-        internal bool[,] isNew = new bool[N, N];
-        internal HashSet<int>[,] candidates = new HashSet<int>[N, N];
+        public Cell[,] Cells { get; private set; }
 
-        internal int CellsUnfilled = N * N;
+        public int CellsUnfilled { get; private set; }
 
+        public Board()
+        {
+            Cells = new Cell[N, N];
+
+            ForEachCell((x, y) =>
+            {
+                Cells[x, y] = new Cell(x, y);
+            });
+
+            CellsUnfilled = N * N;
+        }
 
         public void ForEachCell(Action<int, int> action)
         {
@@ -33,25 +42,42 @@ namespace Sudoku
             }
         }
 
+        public IEnumerable<Cell> CellsInColumn(int index)
+        {
+            for (int i = 0; i < N; i++)
+            {
+                yield return Cells[i, index];
+            }
+        }
+
+        public IEnumerable<Cell> CellsInRow(int index)
+        {
+            for (int j = 0; j < N; j++)
+            {
+                yield return Cells[index, j];
+            }
+        }
 
         private void UpdateCandidates(int x, int y)
         {
-            var value = cell[x, y];
+            var cell = Cells[x, y];
+            var value = cell.Value;
+
             if (value == Empty)
             {
                 return;
             }
 
-            candidates[x, y].Clear();
+            cell.Candidates.Clear();
 
             for (int i = 0; i < N; i++)
             {
-                candidates[i, y].Remove(value);
+                Cells[i, y].Candidates.Remove(value);
             }
 
             for (int j = 0; j < N; j++)
             {
-                candidates[x, j].Remove(value);
+                Cells[x, j].Candidates.Remove(value);
             }
 
             // Remove this value from candidates found in the square
@@ -59,7 +85,7 @@ namespace Sudoku
             {
                 for (int j = n * (y / n), l = 0; l < n; l++, j++)
                 {
-                    candidates[i, j].Remove(value);
+                    Cells[i, j].Candidates.Remove(value);
                 }
             }
 
@@ -77,7 +103,7 @@ namespace Sudoku
             text = text.Replace('.', '0');
             b.ForEachCell((x, y) =>
             {
-                b.cell[x, y] = int.Parse(text.Substring(p, 1));
+                b.Cells[x, y].Value = int.Parse(text.Substring(p, 1));
                 p++;
             });
 
@@ -86,8 +112,6 @@ namespace Sudoku
 
         public void Print(TextWriter writer)
         {
-
-
 
             writer.WriteLine("+-----------------------+");
 
@@ -106,13 +130,14 @@ namespace Sudoku
                         writer.Write("| ");
                     }
 
-                    if (cell[i, j] != 0)
+                    var cell = Cells[i, j];
+                    if (cell.Value != 0)
                     {
-                        if (isNew[i, j])
+                        if (cell.IsNew)
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
                         }
-                        writer.Write(cell[i, j]);
+                        writer.Write(cell.Value);
 
                         Console.ResetColor();
                     }
@@ -137,34 +162,35 @@ namespace Sudoku
             this.ForEachCell((x, y) =>
             {
                 // Update the candidates that will be affected by placing this new cell.
-                if (isNew[x, y])
+                if (Cells[x, y].IsNew)
                 {
                     UpdateCandidates(x, y);
 
-                    isNew[x, y] = false;
+                    Cells[x, y].IsNew = false;
                 }
 
             });
         }
 
-       
+
 
 
         public void ResetAllCandidates()
         {
             CellsUnfilled = N * N;
-            this.ForEachCell((x, y) => {
+            this.ForEachCell((x, y) =>
+            {
 
-                candidates[x, y] = new HashSet<int>(Enumerable.Range(1, 9));
+                Cells[x, y].Candidates = new HashSet<int>(Enumerable.Range(1, 9));
 
-                if (cell[x, y] != Empty)
+                if (Cells[x, y].Value != Empty)
                 {
                     CellsUnfilled--;
 
                     // Mark as new so UpdateCandates will be execute for this cell.
-                    isNew[x, y] = true;
+                    Cells[x, y].IsNew = true;
                 }
-                
+
             });
         }
 
@@ -173,7 +199,7 @@ namespace Sudoku
 
         internal void SetCell(int x, int y, int value)
         {
-            if (this.cell[x, y] != Empty)
+            if (Cells[x, y].Value != Empty)
             {
                 throw new InvalidOperationException();
             }
@@ -188,14 +214,14 @@ namespace Sudoku
                 throw new InvalidOperationException();
             }
 
-            if (cell[x, y] == Empty)
+            if (Cells[x, y].Value == Empty)
             {
                 this.CellsUnfilled--;
             }
 
 
-            this.cell[x, y] = value;
-            this.isNew[x, y] = true;
+            this.Cells[x, y].Value = value;
+            this.Cells[x, y].IsNew = true;
         }
 
 
@@ -204,7 +230,7 @@ namespace Sudoku
         {
             for (int i = 0; i < N; i++)
             {
-                if (i != x && cell[i, y] == value)
+                if (i != x && Cells[i, y].Value == value)
                 {
                     return false;
                 }
@@ -212,7 +238,7 @@ namespace Sudoku
 
             for (int j = 0; j < N; j++)
             {
-                if (j != y && cell[x, j] == value)
+                if (j != y && Cells[x, j].Value == value)
                 {
                     return false;
                 }
@@ -223,7 +249,7 @@ namespace Sudoku
             {
                 for (int j = n * (y / n), l = 0; l < n; l++, j++)
                 {
-                    if (i != x && j != y && cell[i, j] == value)
+                    if (i != x && j != y && Cells[i, j].Value == value)
                     {
                         return false;
                     }
@@ -242,6 +268,15 @@ namespace Sudoku
                 ms.Position = 0;
 
                 return (Board)formatter.Deserialize(ms);
+            }
+        }
+
+
+        public Cell this[int x, int y]
+        {
+            get
+            {
+                return this.Cells[x, y];
             }
         }
     }

@@ -26,7 +26,7 @@ namespace Sudoku
                         for (int j = 0; j < Board.n; j++)
                         {
                             int x = Board.n * k + i, y = Board.n * l + j;
-                            foreach (var candidate in board.candidates[x,y])
+                            foreach (var candidate in board.Cells[x,y].Candidates)
                             {
                                 frequency[candidate]++;
                                 if (frequency[candidate] == 1)

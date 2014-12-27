@@ -16,7 +16,7 @@ namespace Sudoku
 
             board.ForEachCell((x, y) =>
             {
-                var candidates = board.candidates[x, y];
+                var candidates = board.Cells[x, y].Candidates;
                 if (candidates.Count == 1)
                 {
                     board.SetCell(x, y, candidates.Single());

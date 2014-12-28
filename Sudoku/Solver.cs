@@ -15,12 +15,16 @@ namespace Sudoku
 
         public Solver()
         {
+            TraceOutput = TextWriter.Null;
+
             strategies = new List<IStrategy> {
                 new SingleCandidateStrategy(),
                 new OnePossibleValueInSquareStrategy(),
                 new OnePossibleValueInColumnStrategy(),
                 new OnePossibleValueInRowStrategy(),
-                new BruteForceStrategy(this),
+                new NakedCandidatesStrategy(),
+                new HiddenCandidatesStrategy(),
+               // new BruteForceStrategy(this),
             };
         }
 

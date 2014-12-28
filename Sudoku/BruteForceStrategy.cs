@@ -10,6 +10,7 @@ namespace Sudoku
     public class BruteForceStrategy : IStrategy
     {
         private Solver solver;
+        public static int Count = 0;
 
         public BruteForceStrategy(Solver solver)
         {
@@ -18,11 +19,12 @@ namespace Sudoku
 
         public int Iterate(Board board)
         {
+
             // find the cell with the least number of candidates
             int minX = -1, minY = -1, minCount = 10;
             board.ForEachCell((x, y) =>
             {
-                if (board.Cells[x, y].Value == Board.Empty)
+                if (board.Cells[x, y].Value == Cell.Empty)
                 {
                     var c = board.Cells[x, y].Candidates.Count;
                     if (c == 0)
@@ -52,6 +54,8 @@ namespace Sudoku
             solver.PopState();
 
             // Continue iterating with all strategies until complete or inconsistant
+
+            Count++;
 
             return 1;
         }

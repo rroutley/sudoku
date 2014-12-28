@@ -41,8 +41,15 @@
   <ItemGroup>
     <Compile Include="Board.cs" />
     <Compile Include="BruteForceStrategy.cs" />
-    <Compile Include="Cell.cs" />
+    <Compile Include="Cell.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CellResult.cs" />
     <Compile Include="IStrategy.cs" />
+    <Compile Include="HiddenCandidatesStrategy.cs" />
+    <Compile Include="NakedCandidatesStrategy.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="OnePossibleValueInSquareStrategy.cs" />
     <Compile Include="OnePossibleValueStrategyBase.cs" />
     <Compile Include="OnePossibleValueInRowStrategy.cs" />

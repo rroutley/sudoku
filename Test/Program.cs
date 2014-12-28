@@ -18,33 +18,46 @@ namespace Test
             int number = 0;
             while (true)
             {
+                number++;
                 //Console.WriteLine("Enter Grid number");
                 //var input = Console.ReadLine();
-                //if (!int.TryParse(input, out number)){
+                //if (!int.TryParse(input, out number))
+                //{
                 //    continue;
                 //}
-                number++;
+
+
                 if (number < 1 || number > 50)
                 {
                     break;
                 }
 
+                Console.WriteLine("Grid {0:00}", number);
                 puzzle = LoadGrid(number);
 
                 Board b = Board.Load(puzzle);
 
-                b.Print(Console.Out);
-
                 var solver = new Solver();
-                solver.TraceOutput = Console.Out;
+               // solver.TraceOutput = Console.Out;
+                b.Print(solver.TraceOutput);
+
                 var success = solver.Execute(b);
                 if (!success)
                 {
-                    Console.ReadLine();
+                    b.Print(Console.Out);
+                   //onsole.ReadLine();
                 }
 
 
             }
+
+            Console.WriteLine("Naked Pair used {0} times", NakedCandidatesStrategy.Count);
+            if (BruteForceStrategy.Count > 0)
+            {
+                Console.WriteLine("Brute Force used {0} times", BruteForceStrategy.Count);
+                Console.ReadLine();
+            }
+            Console.ReadLine();
         }
 
         private static string LoadGrid(int number)

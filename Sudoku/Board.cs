@@ -13,7 +13,6 @@ namespace Sudoku
     {
         public const int n = 3;
         public const int N = n * n;
-        public const int Empty = 0;
 
         public Cell[,] Cells { get; private set; }
 
@@ -58,12 +57,26 @@ namespace Sudoku
             }
         }
 
+        public IEnumerable<Cell> CellsInSquare(int index)
+        {
+            int x = n * (index / n), y = n * (index % n);
+
+            for (int i = n * (x / n), k = 0; k < n; k++, i++)
+            {
+                for (int j = n * (y / n), l = 0; l < n; l++, j++)
+                {
+                    yield return Cells[i, j];
+                }
+            }
+
+        }
+
         private void UpdateCandidates(int x, int y)
         {
             var cell = Cells[x, y];
             var value = cell.Value;
 
-            if (value == Empty)
+            if (value == Cell.Empty)
             {
                 return;
             }
@@ -183,7 +196,7 @@ namespace Sudoku
 
                 Cells[x, y].Candidates = new HashSet<int>(Enumerable.Range(1, 9));
 
-                if (Cells[x, y].Value != Empty)
+                if (Cells[x, y].Value != Cell.Empty)
                 {
                     CellsUnfilled--;
 
@@ -199,7 +212,7 @@ namespace Sudoku
 
         internal void SetCell(int x, int y, int value)
         {
-            if (Cells[x, y].Value != Empty)
+            if (Cells[x, y].Value != Cell.Empty)
             {
                 throw new InvalidOperationException();
             }
@@ -214,7 +227,7 @@ namespace Sudoku
                 throw new InvalidOperationException();
             }
 
-            if (Cells[x, y].Value == Empty)
+            if (Cells[x, y].Value == Cell.Empty)
             {
                 this.CellsUnfilled--;
             }

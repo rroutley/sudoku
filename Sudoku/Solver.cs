@@ -24,7 +24,9 @@ namespace Sudoku
                 new OnePossibleValueInRowStrategy(),
                 new NakedCandidatesStrategy(),
                 new HiddenCandidatesStrategy(),
-               // new BruteForceStrategy(this),
+                new PointingPairsStrategy(),
+                new BoxLineReductionStrategy(),
+                new BruteForceStrategy(this),
             };
         }
 

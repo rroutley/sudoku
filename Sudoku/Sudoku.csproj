@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="BoxLineReductionStrategy.cs" />
     <Compile Include="BruteForceStrategy.cs" />
     <Compile Include="Cell.cs">
       <SubType>Code</SubType>
@@ -54,6 +55,7 @@
     <Compile Include="OnePossibleValueStrategyBase.cs" />
     <Compile Include="OnePossibleValueInRowStrategy.cs" />
     <Compile Include="OnePossibleValueInColumnStrategy.cs" />
+    <Compile Include="PointingPairsStrategy.cs" />
     <Compile Include="SingleCandidateStrategy.cs" />
     <Compile Include="Solver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

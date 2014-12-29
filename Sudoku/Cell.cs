@@ -18,6 +18,7 @@ namespace Sudoku
 
         public int X { get; private set; }
         public int Y { get; private set; }
+        public int Z { get { return 3 * (X / 3) + (Y / 3); } }
 
         public int Value { get; set; }
         public HashSet<int> Candidates { get; set; }
@@ -64,6 +65,12 @@ namespace Sudoku
         public static bool operator !=(Cell left, Cell right)
         {
             return !left.Equals(right);
+        }
+
+        internal void RemoveCandidate(int value)
+        {
+            this.Candidates.Remove(value);
+            if (this.Candidates.Count == 0) throw new Exception();
         }
     }
 }

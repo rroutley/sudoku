@@ -46,6 +46,8 @@ namespace Sudoku
                     // Remove pair values from other candidates in unit
                     foreach (var cell in cellsInUnit(index))
                     {
+                        if (cell.Value != Cell.Empty) continue;
+
                         if (p.Cells.Contains(cell))
                         {
                             continue;
@@ -56,7 +58,7 @@ namespace Sudoku
                             var cellCandidates = cell.Candidates;
                             if (cellCandidates.Contains(candidate))
                             {
-                                cellCandidates.Remove(candidate);
+                                cell.RemoveCandidate(candidate);
 
                                 success++;
                             }

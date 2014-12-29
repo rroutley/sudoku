@@ -38,7 +38,7 @@ namespace Test
                 Board b = Board.Load(puzzle);
 
                 var solver = new Solver();
-               // solver.TraceOutput = Console.Out;
+                //solver.TraceOutput = Console.Out;
                 b.Print(solver.TraceOutput);
 
                 var success = solver.Execute(b);

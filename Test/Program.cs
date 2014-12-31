@@ -13,10 +13,13 @@ namespace Test
         static void Main(string[] args)
         {
 
-            string puzzle;
+          //  string puzzle;
+
+            var x = File.ReadLines(@"..\..\top95.txt");
 
             int number = 0;
-            while (true)
+            //foreach(var puzzle in x)
+            while(true)
             {
                 number++;
                 //Console.WriteLine("Enter Grid number");
@@ -33,19 +36,18 @@ namespace Test
                 }
 
                 Console.WriteLine("Grid {0:00}", number);
-                puzzle = LoadGrid(number);
+                var puzzle = LoadGrid(number);
 
                 Board b = Board.Load(puzzle);
 
                 var solver = new Solver();
-                //solver.TraceOutput = Console.Out;
+               // solver.TraceOutput = Console.Out;
                 b.Print(solver.TraceOutput);
 
                 var success = solver.Execute(b);
                 if (!success)
                 {
                     b.Print(Console.Out);
-                   //onsole.ReadLine();
                 }
 
 
@@ -55,7 +57,6 @@ namespace Test
             if (BruteForceStrategy.Count > 0)
             {
                 Console.WriteLine("Brute Force used {0} times", BruteForceStrategy.Count);
-                Console.ReadLine();
             }
             Console.ReadLine();
         }

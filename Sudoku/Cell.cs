@@ -70,7 +70,7 @@ namespace Sudoku
         internal void RemoveCandidate(int value)
         {
             this.Candidates.Remove(value);
-            if (this.Candidates.Count == 0) throw new Exception();
+            if (this.Candidates.Count == 0) throw new InvalidOperationException();
         }
     }
 }

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="p096_sudoku.txt" />
+    <Content Include="top95.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sudoku\Sudoku.csproj">

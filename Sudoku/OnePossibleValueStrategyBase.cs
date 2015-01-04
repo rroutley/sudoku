@@ -8,17 +8,27 @@ namespace Sudoku
 {
     public abstract class OnePossibleValueStrategyBase : IStrategy
     {
-        protected int SetSingletons(Board board, int[] frequency, Tuple<int, int>[] firstSeen)
+        protected int SetSingletons(Board board, IEnumerable<Cell> cells)
         {
             int success = 0;
-            for (int f = 1; f <= Board.N; f++)
+            var singletons = from cell in cells
+                             where cell.Value == Cell.Empty
+                             from candidate in cell.Candidates
+                             group cell by candidate into g
+                             where g.Count() == 1
+                             select new
+                             {
+                                 Value = g.Key,
+                                 X = g.Single().X,
+                                 Y = g.Single().Y,
+                             };
+
+            foreach (var singleton in singletons)
             {
-                if (frequency[f] == 1)
-                {
-                    board.SetCell(firstSeen[f].Item1, firstSeen[f].Item2, f);
-                    success++;
-                }
+                board.SetCell(singleton.X, singleton.Y, singleton.Value);
+                success++;
             }
+
             return success;
         }
 

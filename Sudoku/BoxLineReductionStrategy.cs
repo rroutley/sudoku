@@ -51,21 +51,7 @@ namespace Sudoku
 
                 foreach (var p in candidatesInBox.Where(f => f.Z.Count() == 1))
                 {
-                    foreach (var cell in board.CellsInSquare(p.Z.Single()))
-                    {
-                        if (cell.Value != Cell.Empty) continue;
-
-                        if (p.Cells.Contains(cell))
-                        {
-                            continue;
-                        }
-
-                        if (cell.Candidates.Contains(p.Candidate))
-                        {
-                            cell.RemoveCandidate(p.Candidate);
-                            success++;
-                        }
-                    }
+                    success += board.CellsInSquare(p.Z.Single()).RemoveCandidate(p.Candidate, p.Cells);
                 }
 
             }

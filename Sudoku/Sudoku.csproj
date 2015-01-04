@@ -45,16 +45,21 @@
     <Compile Include="Cell.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CellExtensions.cs" />
     <Compile Include="CellResult.cs" />
     <Compile Include="IStrategy.cs" />
     <Compile Include="HiddenCandidatesStrategy.cs" />
     <Compile Include="NakedCandidatesStrategy.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OnePossibleValueInSquareStrategy.cs" />
+    <Compile Include="OnePossibleValueInColumnStrategy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OnePossibleValueInSquareStrategy.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="OnePossibleValueStrategyBase.cs" />
     <Compile Include="OnePossibleValueInRowStrategy.cs" />
-    <Compile Include="OnePossibleValueInColumnStrategy.cs" />
     <Compile Include="PointingPairsStrategy.cs" />
     <Compile Include="SingleCandidateStrategy.cs" />
     <Compile Include="Solver.cs" />

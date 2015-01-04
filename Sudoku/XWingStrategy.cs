@@ -49,19 +49,7 @@ namespace Sudoku
 
             foreach (var column in xwingColumns)
             {
-                foreach (var cell in board.CellsInColumn(column.Index))
-                {
-                    if (cell.Value != Cell.Empty) continue;
-
-                    if (column.Cells.Contains(cell)) continue;
-
-                    if (cell.Candidates.Contains(c))
-                    {
-                        cell.RemoveCandidate(c);
-                        success++;
-                    }
-                }
-
+                success += board.CellsInColumn(column.Index).RemoveCandidate(c, column.Cells);
             }
 
             return success;
@@ -75,7 +63,7 @@ namespace Sudoku
         {
             int success = 0;
 
-            var xwingColumns = from row in Enumerable.Range(0, 9)                           // for each row
+            var xwingRows = from row in Enumerable.Range(0, 9)                           // for each row
                                from cell in board.CellsInColumn(row)                           // for each cell in row
                                from candidate in cell.Candidates                            // for each candidate in cell
                                where candidate == c                                         // where candidate is the value we're looking for
@@ -93,21 +81,9 @@ namespace Sudoku
                                };
 
 
-            foreach (var column in xwingColumns)
+            foreach (var row in xwingRows)
             {
-                foreach (var cell in board.CellsInRow(column.Index))
-                {
-                    if (cell.Value != Cell.Empty) continue;
-
-                    if (column.Cells.Contains(cell)) continue;
-
-                    if (cell.Candidates.Contains(c))
-                    {
-                        cell.RemoveCandidate(c);
-                        success++;
-                    }
-                }
-
+                success += board.CellsInRow(row.Index).RemoveCandidate(c, row.Cells);
             }
 
             return success;

@@ -12,33 +12,11 @@ namespace Sudoku
         {
             int success = 0;
 
-            // for all squares
-            for (int k = 0; k < Board.n; k++)
+            // for all columns
+            for (int i = 0; i < Board.N; i++)
             {
-                for (int l = 0; l < Board.n; l++)
-                {
-                    // Find Candidates that appear only once.
-                    int[] frequency = new int[Board.N + 1];
-                    Tuple<int, int>[] firstSeen = new Tuple<int, int>[Board.N + 1];
-
-                    for (int i = 0; i < Board.n; i++)
-                    {
-                        for (int j = 0; j < Board.n; j++)
-                        {
-                            int x = Board.n * k + i, y = Board.n * l + j;
-                            foreach (var candidate in board.Cells[x,y].Candidates)
-                            {
-                                frequency[candidate]++;
-                                if (frequency[candidate] == 1)
-                                {
-                                    firstSeen[candidate] = Tuple.Create(x, y);
-                                }
-                            }
-                        }
-                    }
-
-                    success += SetSingletons(board, frequency, firstSeen);
-                }
+                //// Find Candidates that appear only once.
+                success += SetSingletons(board, board.CellsInSquare(i));
             }
 
             return success;

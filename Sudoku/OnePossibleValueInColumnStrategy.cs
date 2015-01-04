@@ -15,22 +15,8 @@ namespace Sudoku
             // for all columns
             for (int i = 0; i < Board.N; i++)
             {
-                // Find Candidates that appear only once.
-                int[] frequency = new int[Board.N + 1];
-                Tuple<int, int>[] firstSeen = new Tuple<int, int>[Board.N + 1];
-                for (int j = 0; j < Board.N; j++)
-                {
-                    foreach (var candidate in board.Cells[i, j].Candidates)
-                    {
-                        frequency[candidate]++;
-                        if (frequency[candidate] == 1)
-                        {
-                            firstSeen[candidate] = Tuple.Create(i, j);
-                        }
-                    }
-                }
-
-                success += SetSingletons(board, frequency, firstSeen);
+                //// Find Candidates that appear only once.
+                success += SetSingletons(board, board.CellsInColumn(i));
             }
 
             return success;

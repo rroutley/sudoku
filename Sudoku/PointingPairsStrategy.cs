@@ -37,40 +37,12 @@ namespace Sudoku
 
                 foreach (var p in foo.Where(f => f.X.Count() == 1))
                 {
-                    foreach (var cell in board.CellsInRow(p.X.Single()))
-                    {
-                        if (cell.Value != Cell.Empty) continue;
-
-                        if (p.Cells.Contains(cell))
-                        {
-                            continue;
-                        }
-
-                        if (cell.Candidates.Contains(p.Candidate))
-                        {
-                            cell.RemoveCandidate(p.Candidate);
-                            success++;
-                        }
-                    }
+                    success += board.CellsInRow(p.X.Single()).RemoveCandidate(p.Candidate, p.Cells);
                 }
 
                 foreach (var p in foo.Where(f => f.Y.Count() == 1))
                 {
-                    foreach (var cell in board.CellsInColumn(p.Y.Single()))
-                    {
-                        if (cell.Value != Cell.Empty) continue;
-
-                        if (p.Cells.Contains(cell))
-                        {
-                            continue;
-                        }
-
-                        if (cell.Candidates.Contains(p.Candidate))
-                        {
-                            cell.RemoveCandidate(p.Candidate);
-                            success++;
-                        }
-                    }
+                    success += board.CellsInColumn(p.Y.Single()).RemoveCandidate(p.Candidate, p.Cells);
                 }
 
             }

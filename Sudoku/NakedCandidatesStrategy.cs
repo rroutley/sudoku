@@ -44,26 +44,9 @@ namespace Sudoku
                 {
                     // Found Naked Pair
                     // Remove pair values from other candidates in unit
-                    foreach (var cell in cellsInUnit(index))
+                    foreach (var candidate in p.Values)
                     {
-                        if (cell.Value != Cell.Empty) continue;
-
-                        if (p.Cells.Contains(cell))
-                        {
-                            continue;
-                        }
-
-                        foreach (var candidate in p.Values)
-                        {
-                            var cellCandidates = cell.Candidates;
-                            if (cellCandidates.Contains(candidate))
-                            {
-                                cell.RemoveCandidate(candidate);
-
-                                success++;
-                            }
-                        }
-
+                        success += cellsInUnit(index).RemoveCandidate(candidate, p.Cells);
                     }
                 }
 

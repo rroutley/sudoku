@@ -43,7 +43,7 @@ namespace Sudoku
             });
 
 
-            // Save the state of thew board foreach candidiate
+            // Save the state of the board foreach candidiate
             foreach (var value in board.Cells[minX, minY].Candidates)
             {
                 board.ReplaceCell(minX, minY, value);

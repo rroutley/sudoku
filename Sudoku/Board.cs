@@ -125,6 +125,7 @@ namespace Sudoku
 
         public void Print(TextWriter writer)
         {
+            if (writer == TextWriter.Null) return;
 
             writer.WriteLine("+-----------------------+");
 
@@ -257,7 +258,6 @@ namespace Sudoku
                 }
             }
 
-            // Remove this value from candidates found in the square
             for (int i = n * (x / n), k = 0; k < n; k++, i++)
             {
                 for (int j = n * (y / n), l = 0; l < n; l++, j++)

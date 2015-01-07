@@ -18,6 +18,8 @@ namespace Sudoku
 
         public int CellsUnfilled { get; private set; }
 
+        public int CellsFilled { get { return N * N - CellsUnfilled; } }
+
         public Board()
         {
             Cells = new Cell[N, N];
@@ -37,6 +39,17 @@ namespace Sudoku
                 for (int j = 0; j < N; j++)
                 {
                     action(i, j);
+                }
+            }
+        }
+
+        public IEnumerable<Cell> AllCells()
+        {
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    yield return Cells[i, j];
                 }
             }
         }
@@ -71,7 +84,7 @@ namespace Sudoku
 
         }
 
-        private void UpdateCandidates(int x, int y)
+        public void UpdateCandidates(int x, int y)
         {
             var cell = Cells[x, y];
             var value = cell.Value;
@@ -291,6 +304,11 @@ namespace Sudoku
             {
                 return this.Cells[x, y];
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Join("", this.AllCells().Select(c => c.Value));
         }
     }
 }

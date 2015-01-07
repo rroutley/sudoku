@@ -10,6 +10,12 @@ namespace Sudoku
     public class HiddenCandidatesStrategy : IStrategy
     {
         public static int Count = 0;
+        private int length;
+
+        public HiddenCandidatesStrategy(int length)
+        {
+            this.length = length;
+        }
 
         public int Iterate(Board board)
         {
@@ -17,9 +23,7 @@ namespace Sudoku
 
             int success = 0;
 
-            success += HiddenCandidates(board, 2);
-            success += HiddenCandidates(board, 3);
-            success += HiddenCandidates(board, 4);
+            success += HiddenCandidates(board, this.length);
 
             if (success > 0) Count++;
 

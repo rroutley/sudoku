@@ -12,52 +12,68 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            var gen = new Generator();
+            var completeBoard = gen.NewCompletedBoard();
+
+            completeBoard.Print(Console.Out);
+
+            var newPuzzle = gen.BuildPuzzle(completeBoard, new Generator.GeneratorOptions { Strategies = Generator.ToughStrategies });
+            newPuzzle.Print(Console.Out);
+
+            Console.WriteLine(newPuzzle);
+
+            var solver = new Solver();
+            solver.TraceOutput = Console.Out;
+            var t = Board.Load(newPuzzle.ToString());
+            var success = solver.Execute(t);
+            
+            Console.WriteLine(newPuzzle);
 
           //  string puzzle;
 
-            var x = File.ReadLines(@"..\..\top95.txt");
+            //var x = File.ReadLines(@"..\..\top95.txt");
 
-            int number = 0;
-            //foreach(var puzzle in x)
-            while(true)
-            {
-                number++;
-                //Console.WriteLine("Enter Grid number");
-                //var input = Console.ReadLine();
-                //if (!int.TryParse(input, out number))
-                //{
-                //    continue;
-                //}
-
-
-                if (number < 1 || number > 50)
-                {
-                    break;
-                }
-
-                Console.WriteLine("Grid {0:00}", number);
-                var puzzle = LoadGrid(number);
-
-                Board b = Board.Load(puzzle);
-
-                var solver = new Solver();
-               // solver.TraceOutput = Console.Out;
-                b.Print(solver.TraceOutput);
-
-                var success = solver.Execute(b);
-                if (!success)
-                {
-                    b.Print(Console.Out);
-                }
+            //int number = 0;
+            ////foreach(var puzzle in x)
+            //while(true)
+            //{
+            //    number++;
+            //    //Console.WriteLine("Enter Grid number");
+            //    //var input = Console.ReadLine();
+            //    //if (!int.TryParse(input, out number))
+            //    //{
+            //    //    continue;
+            //    //}
 
 
-            }
+            //    if (number < 1 || number > 50)
+            //    {
+            //        break;
+            //    }
 
-            Console.WriteLine("Naked Pair used {0} times", NakedCandidatesStrategy.Count);
-            if (BruteForceStrategy.Count > 0)
-            {
-                Console.WriteLine("Brute Force used {0} times", BruteForceStrategy.Count);
-            }
+            //    Console.WriteLine("Grid {0:00}", number);
+            //    var puzzle = LoadGrid(number);
+
+            //    Board b = Board.Load(puzzle);
+
+            //    var solver = new Solver();
+            //   // solver.TraceOutput = Console.Out;
+            //    b.Print(solver.TraceOutput);
+
+            //    var success = solver.Execute(b);
+            //    if (!success)
+            //    {
+            //        b.Print(Console.Out);
+            //    }
+
+
+            //}
+
+            //Console.WriteLine("Naked Pair used {0} times", NakedCandidatesStrategy.Count);
+            //if (BruteForceStrategy.Count > 0)
+            //{
+            //    Console.WriteLine("Brute Force used {0} times", BruteForceStrategy.Count);
+            //}
             Console.ReadLine();
         }
 

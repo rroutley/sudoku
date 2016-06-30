@@ -49,7 +49,7 @@ namespace Sudoku
 
         public Board BuildPuzzle(Board board, GeneratorOptions generatorOptions)
         {
-            var filledCells = GetRandomCellOrdering(board, generatorOptions);
+            var filledCells = GetRandomCellOrdering(board).ToList();
             int filledCellCount = filledCells.Count();
 
             var options = new SolverOptions
@@ -59,7 +59,9 @@ namespace Sudoku
             };
 
             for (int cellNum = 0; cellNum < filledCellCount && board.CellsFilled > generatorOptions.MinimumFilledCells; cellNum++)
+            //foreach(var cell in filledCells)
             {
+                //if (board.CellsFilled > generatorOptions.MinimumFilledCells) break;
                 var cell = filledCells[cellNum];
                 int oldValue = cell.Value;
 
@@ -77,9 +79,31 @@ namespace Sudoku
             return board;
         }
 
-        private IList<Cell> GetRandomCellOrdering(Board board, GeneratorOptions options)
+        private IEnumerable<Cell> GetRandomCellOrdering(Board board)
         {
-            List<Cell> cells = new List<Cell>(board.AllCells());
+            var cells = from c in board.AllCells()
+                        where c.X <= c.Y
+                        select c;
+
+            var random = GetRandomCellOrdering(cells);
+
+            foreach (var cell in random)
+            {
+                if (cell.X == cell.Y)
+                {
+                    yield return cell;
+                }
+                else
+                {
+                    yield return cell;
+                    yield return board[cell.Y, cell.X];
+                }
+            }
+        }
+
+        private IList<Cell> GetRandomCellOrdering(IEnumerable<Cell> collection)
+        {
+            List<Cell> cells = new List<Cell>(collection);
             int n = cells.Count;
             while (n > 1)
             {
@@ -160,7 +184,7 @@ namespace Sudoku
                 }
             }
 
-            return result;
+            return result ?? SolverResult.NoSolution;
         }
 
 
@@ -254,10 +278,6 @@ namespace Sudoku
 
         public class GeneratorOptions
         {
-            public GeneratorOptions()
-            {
-                MinimumFilledCells = 17;
-            }
 
             public IEnumerable<IStrategy> Strategies { get; set; }
 

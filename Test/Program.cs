@@ -13,12 +13,17 @@ namespace Test
         static void Main(string[] args)
         {
             var gen = new Generator();
-            var completeBoard = gen.NewCompletedBoard();
+            Board newPuzzle;
+            //do
+            //{
+                var completeBoard = gen.NewCompletedBoard();
 
-            completeBoard.Print(Console.Out);
+                //completeBoard.Print(Console.Out);
 
-            var newPuzzle = gen.BuildPuzzle(completeBoard, new Generator.GeneratorOptions { Strategies = Generator.ToughStrategies });
-            newPuzzle.Print(Console.Out);
+                newPuzzle = gen.BuildPuzzle(completeBoard, new Generator.GeneratorOptions { Strategies = new[] { new SingleCandidateStrategy() } });
+                //newPuzzle.Print(Console.Out);
+
+            //} while (newPuzzle.CellsFilled > 20);
 
             Console.WriteLine(newPuzzle);
 

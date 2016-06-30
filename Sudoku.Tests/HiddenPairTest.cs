@@ -24,7 +24,7 @@ namespace Sudoku.Tests
             };
 
 
-            var target = new HiddenCandidatesStrategy();
+            var target = new HiddenCandidatesStrategy(2);
             var actual = target.HiddenCandidates(row, 2);
 
             var first = actual.First();
@@ -50,7 +50,7 @@ namespace Sudoku.Tests
             };
 
 
-            var target = new HiddenCandidatesStrategy();
+            var target = new HiddenCandidatesStrategy(3);
             var actual = target.HiddenCandidates(row, 3);
 
             var first = actual.First();
@@ -76,7 +76,7 @@ namespace Sudoku.Tests
             };
 
 
-            var target = new HiddenCandidatesStrategy();
+            var target = new HiddenCandidatesStrategy(4);
             var actual = target.HiddenCandidates(row, 4);
 
             var first = actual.First();

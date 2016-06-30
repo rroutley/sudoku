@@ -27,7 +27,7 @@ namespace Sudoku.Tests
             };
 
 
-            var target = new NakedCandidatesStrategy();
+            var target = new NakedCandidatesStrategy(2);
             var actual = target.NakedCandidates(row, 2);
 
             var first = actual.First();
@@ -53,7 +53,7 @@ namespace Sudoku.Tests
             };
 
 
-            var target = new NakedCandidatesStrategy();
+            var target = new NakedCandidatesStrategy(3);
             var actual = target.NakedCandidates(row, 3);
 
             var first = actual.First();

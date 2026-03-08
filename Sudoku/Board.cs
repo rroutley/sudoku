@@ -287,16 +287,17 @@ namespace Sudoku
 
         internal Board Clone()
         {
-            using (var ms = new MemoryStream())
+            Board clone = new Board();
+
+            this.ForEachCell((x, y) =>
             {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, this);
-                ms.Position = 0;
+                clone.Cells[x, y] = this.Cells[x, y].Clone();
+            });
 
-                return (Board)formatter.Deserialize(ms);
-            }
+            clone.CellsUnfilled = this.CellsUnfilled;
+
+            return clone;
         }
-
 
         public Cell this[int x, int y]
         {

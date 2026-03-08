@@ -43,8 +43,7 @@ namespace Sudoku
                 return true;
             }
 
-            var other = obj as Cell;
-            if (ReferenceEquals(other, null))
+            if (obj is not Cell other)
             {
                 return false;
             }
@@ -71,6 +70,16 @@ namespace Sudoku
         {
             this.Candidates.Remove(value);
             if (this.Candidates.Count == 0) throw new InvalidOperationException();
+        }
+
+        internal Cell Clone()
+        {
+            return new Cell(X, Y)
+            {
+                Value = this.Value,
+                Candidates = [.. this.Candidates],
+                IsNew = this.IsNew
+            };
         }
     }
 }

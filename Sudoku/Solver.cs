@@ -30,8 +30,9 @@ namespace Sudoku
                 new HiddenCandidatesStrategy(4),
                 new PointingPairsStrategy(),
                 new BoxLineReductionStrategy(),
+                new YWingStrategy(),
                 new XWingStrategy(),
-                //new BruteForceStrategy(this),
+               // new BruteForceStrategy(this),
             };
         }
 

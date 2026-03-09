@@ -69,7 +69,7 @@ namespace Sudoku
         internal void RemoveCandidate(int value)
         {
             this.Candidates.Remove(value);
-            if (this.Candidates.Count == 0) throw new InvalidOperationException();
+            if (this.Candidates.Count == 0) throw new InvalidOperationException("Removed last candidate from cell (" + X + ", " + Y + ")");
         }
 
         internal Cell Clone()

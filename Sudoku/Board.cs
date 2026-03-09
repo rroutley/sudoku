@@ -136,6 +136,45 @@ namespace Sudoku
             return b;
         }
 
+        public static Board Load(IList<int> ints)
+        {
+            Board b = new Board();
+            if (ints.Count != 81)
+            {
+                throw new ArgumentException();
+            }
+
+            int p = 0;
+            b.ForEachCell((x, y) =>
+            {
+                b.Cells[x, y].Candidates = [];
+
+                var value = ints[p];
+                if (value >= 1 && value <= 9)
+                {
+                    b.Cells[x, y].Value = value;
+                }
+                else
+                {
+                    b.Cells[x, y].Value = Cell.Empty;
+                    var candidates = new SortedSet<int>();
+                    while (value > 0)
+                    {
+                        var candidate = value % 10;
+                        if (candidate >= 1 && candidate <= 9)
+                        {
+                            candidates.Add(candidate);
+                        }
+                        value /= 10;
+                    }
+                    b.Cells[x, y].Candidates = [.. candidates];
+                }
+                p++;
+            });
+
+            return b;
+        }
+
         public void Print(TextWriter writer)
         {
             if (writer == TextWriter.Null) return;
@@ -184,6 +223,68 @@ namespace Sudoku
 
         }
 
+        public void PrintWithCandidates(TextWriter writer)
+        {
+            if (writer == TextWriter.Null) return;
+
+            var width = (from c in AllCells()
+                         orderby c.Candidates.Count descending
+                         select c.Candidates.Count).First();
+            if (width < 1) width = 1;
+
+            var line = new string('-', 1 + width * 3 + 3);
+
+            writer.WriteLine($"+{line}+{line}+{line}+");
+
+            for (int i = 0; i < N; i++)
+            {
+
+                if (i % 3 == 0 && i > 0)
+                {
+                    writer.WriteLine($"|{line}+{line}+{line}|");
+                }
+
+                for (int j = 0; j < N; j++)
+                {
+                    if (j % n == 0)
+                    {
+                        writer.Write("| ");
+                    }
+
+                    var cell = Cells[i, j];
+                    if (cell.Value != 0)
+                    {
+                        if (cell.IsNew)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                        }
+                        writer.Write(cell.Value);
+                        writer.Write(new string(' ', width - 1));
+
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        foreach (var candidate in cell.Candidates)
+                        {
+                            writer.Write(candidate);
+                        }
+                        Console.ResetColor();
+                        writer.Write(new string(' ', width - cell.Candidates.Count));
+                    }
+
+                    writer.Write(" ");
+
+
+                }
+                writer.WriteLine("|");
+
+            }
+            writer.WriteLine($"+{line}+{line}+{line}+");
+
+        }
+
         public void UpdateChangedCandidates()
         {
             this.ForEachCell((x, y) =>
@@ -228,7 +329,7 @@ namespace Sudoku
         {
             if (Cells[x, y].Value != Cell.Empty)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Cell already has a value");
             }
 
             ReplaceCell(x, y, value);
@@ -238,7 +339,7 @@ namespace Sudoku
         {
             if (!CanSetCell(x, y, value))
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Cannot set cell to this value");
             }
 
             if (Cells[x, y].Value == Cell.Empty)

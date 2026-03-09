@@ -29,7 +29,7 @@ namespace Sudoku
                     var c = board.Cells[x, y].Candidates.Count;
                     if (c == 0)
                     {
-                        throw new InvalidOperationException();
+                        throw new InvalidOperationException("Inconsistent board, no candidates for cell (" + x + ", " + y + ")");
                     }
 
 
